@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bank_transfer_app.model.BankTransaction;
 import com.example.bank_transfer_app.model.TransactionStatus;
+import com.example.bank_transfer_app.model.TransactionType;
 import com.example.bank_transfer_app.repository.BankTransactionRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TransactionAuditService {
 
-
     private final BankTransactionRepository transactionRepository;
 
-
+    // Save failed transactions independently
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void recordFailure(
             String senderAccount,
@@ -32,11 +32,10 @@ public class TransactionAuditService {
                 receiverAccount,
                 amount,
                 TransactionStatus.FAILED,
-                reason
+                reason,
+                TransactionType.TRANSFER
         );
 
         transactionRepository.save(failedTransaction);
-
     }
-
 }

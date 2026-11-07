@@ -1,6 +1,7 @@
 package com.example.bank_transfer_app.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.example.bank_transfer_app.exception.InvalidTransferException;
 import com.example.bank_transfer_app.model.BankTransaction;
 import com.example.bank_transfer_app.model.Customer;
 import com.example.bank_transfer_app.model.TransactionStatus;
+import com.example.bank_transfer_app.model.TransactionType;
 import com.example.bank_transfer_app.repository.BankTransactionRepository;
 import com.example.bank_transfer_app.repository.CustomerRepository;
 
@@ -25,6 +27,13 @@ public class BankService {
 
     private final CustomerRepository customerRepository;
     private final BankTransactionRepository transactionRepository;
+
+    // Bank account used to receive transfer fees
+    private static final String BANK_FEE_ACCOUNT = "999999";
+
+    // Transfer fee percentage: 1%
+    private static final BigDecimal TRANSFER_FEE_RATE =
+            new BigDecimal("0.01");
 
     // =========================================
     // CUSTOMER OPERATIONS
@@ -49,7 +58,9 @@ public class BankService {
     public Customer getCustomer(String accountNumber) {
 
         if (accountNumber == null || accountNumber.isBlank()) {
-            throw new CustomerNotFoundException("Account number is required.");
+            throw new CustomerNotFoundException(
+                    "Account number is required."
+            );
         }
 
         return customerRepository
@@ -129,7 +140,7 @@ public class BankService {
     }
 
     // =========================================
-    // MONEY TRANSFER
+    // MONEY TRANSFER WITH 1% FEE
     // =========================================
 
     @Transactional(rollbackFor = Exception.class)
@@ -174,56 +185,168 @@ public class BankService {
             );
         }
 
-        // 5. Check whether sender exists
+        // 5. Validate that the accounts exist
         getCustomer(senderAccount);
-
-        // 6. Check whether receiver exists
         getCustomer(receiverAccount);
 
-        // 7. Debit money from sender account
+        // 6. Calculate the 1% transfer fee
+        BigDecimal transferAmount = request.getAmount();
+
+        BigDecimal fee = transferAmount
+                .multiply(TRANSFER_FEE_RATE)
+                .setScale(2, RoundingMode.HALF_UP);
+
+        // Total amount deducted from sender
+        BigDecimal totalDebit = transferAmount.add(fee);
+
+        // 7. Debit transfer amount and fee from sender
         int debitResult = customerRepository.debit(
                 senderAccount,
-                request.getAmount()
+                totalDebit
         );
 
         if (debitResult == 0) {
-
             throw new InsufficientBalanceException(
-                    "Insufficient balance in sender account."
+                    "Insufficient balance to complete the transfer "
+                    + "including the 1% fee."
             );
         }
 
-        // 8. Simulate system failure after debit
+        // 8. Simulate system failure to test rollback
         if (request.isSimulateFailure()) {
-
             throw new RuntimeException(
                     "SIMULATED SYSTEM FAILURE AFTER DEBIT."
             );
         }
 
-        // 9. Credit money to receiver account
-        int creditResult = customerRepository.credit(
+        // 9. Credit transfer amount to receiver
+        int receiverCreditResult = customerRepository.credit(
                 receiverAccount,
-                request.getAmount()
+                transferAmount
         );
 
-        if (creditResult == 0) {
-
+        if (receiverCreditResult == 0) {
             throw new CustomerNotFoundException(
                     "Receiver account could not be credited."
             );
         }
 
-        // 10. Save successful transaction record
+        // 10. Credit transfer fee to bank account
+        int feeCreditResult = customerRepository.credit(
+                BANK_FEE_ACCOUNT,
+                fee
+        );
+
+        if (feeCreditResult == 0) {
+            throw new CustomerNotFoundException(
+                    "Bank fee account could not be credited."
+            );
+        }
+
+        // 11. Save successful transfer record
         BankTransaction transaction = new BankTransaction(
                 senderAccount,
                 receiverAccount,
-                request.getAmount(),
+                transferAmount,
                 TransactionStatus.SUCCESS,
-                "Money transferred successfully."
+                "Money transferred successfully. Transfer fee: "
+                        + fee,
+                TransactionType.TRANSFER
         );
 
         transactionRepository.save(transaction);
+    }
+
+    // =========================================
+    // DEPOSIT MONEY
+    // =========================================
+
+    @Transactional(rollbackFor = Exception.class)
+    public void deposit(
+            String accountNumber,
+            BigDecimal amount) {
+
+        // Validate deposit amount
+        validateAmount(amount);
+
+        // Check whether customer exists
+        Customer customer = getCustomer(accountNumber);
+
+        // Credit the customer's account
+        int result = customerRepository.credit(
+                customer.getAccountNumber(),
+                amount
+        );
+
+        if (result == 0) {
+            throw new CustomerNotFoundException(
+                    "Deposit could not be completed."
+            );
+        }
+
+        // Save deposit transaction record
+        BankTransaction transaction = new BankTransaction(
+                null,
+                customer.getAccountNumber(),
+                amount,
+                TransactionStatus.SUCCESS,
+                "Money deposited successfully.",
+                TransactionType.DEPOSIT
+        );
+
+        transactionRepository.save(transaction);
+    }
+
+    // =========================================
+    // WITHDRAW MONEY
+    // =========================================
+
+    @Transactional(rollbackFor = Exception.class)
+    public void withdraw(
+            String accountNumber,
+            BigDecimal amount) {
+
+        // Validate withdrawal amount
+        validateAmount(amount);
+
+        // Check whether customer exists
+        Customer customer = getCustomer(accountNumber);
+
+        // Debit money from the customer's account
+        int result = customerRepository.debit(
+                customer.getAccountNumber(),
+                amount
+        );
+
+        if (result == 0) {
+            throw new InsufficientBalanceException(
+                    "Insufficient balance for withdrawal."
+            );
+        }
+
+        // Save withdrawal transaction record
+        BankTransaction transaction = new BankTransaction(
+                customer.getAccountNumber(),
+                null,
+                amount,
+                TransactionStatus.SUCCESS,
+                "Money withdrawn successfully.",
+                TransactionType.WITHDRAWAL
+        );
+
+        transactionRepository.save(transaction);
+    }
+
+    // Validate deposit and withdrawal amounts
+    private void validateAmount(BigDecimal amount) {
+
+        if (amount == null
+                || amount.compareTo(BigDecimal.ZERO) <= 0) {
+
+            throw new InvalidTransferException(
+                    "Amount must be greater than zero."
+            );
+        }
     }
 
     // =========================================
@@ -256,5 +379,43 @@ public class BankService {
         return transactionRepository.countByStatus(
                 TransactionStatus.FAILED
         );
+    }
+
+    // Get successful transfers above a given amount
+    public List<BankTransaction> getLargeTransfers(
+            BigDecimal minAmount) {
+
+        if (minAmount == null
+                || minAmount.compareTo(BigDecimal.ZERO) < 0) {
+
+            throw new InvalidTransferException(
+                    "Minimum amount cannot be negative."
+            );
+        }
+
+        return transactionRepository.findLargeTransfers(
+                minAmount,
+                TransactionStatus.SUCCESS,
+                TransactionType.TRANSFER
+        );
+    }
+
+    // Calculate total successful transfer amount sent by an account
+    public BigDecimal getTotalSentByAccount(
+            String accountNumber) {
+
+        if (accountNumber == null || accountNumber.isBlank()) {
+            throw new InvalidTransferException(
+                    "Account number is required."
+            );
+        }
+
+        BigDecimal total = transactionRepository.getTotalSentByAccount(
+                accountNumber.trim(),
+                TransactionStatus.SUCCESS,
+                TransactionType.TRANSFER
+        );
+
+        return total == null ? BigDecimal.ZERO : total;
     }
 }
