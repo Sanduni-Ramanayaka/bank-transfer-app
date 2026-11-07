@@ -34,6 +34,10 @@ public class BankTransaction {
     @Column(nullable = false, length = 20)
     private TransactionStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "transaction_type", length = 20)
+    private TransactionType type;
+
     @Column(length = 500)
     private String description;
 
@@ -44,20 +48,22 @@ public class BankTransaction {
     protected BankTransaction() {
     }
 
-    public BankTransaction(String senderAccount,
-                           String receiverAccount,
-                           BigDecimal amount,
-                           TransactionStatus status,
-                           String description) {
+    public BankTransaction(
+        String senderAccount,
+        String receiverAccount,
+        BigDecimal amount,
+        TransactionStatus status,
+        String description,
+        TransactionType type) {
 
-        this.senderAccount = senderAccount;
-        this.receiverAccount = receiverAccount;
-        this.amount = amount;
-        this.status = status;
-        this.description = description;
-        this.createdAt = LocalDateTime.now();
-    }
-
+    this.senderAccount = senderAccount;
+    this.receiverAccount = receiverAccount;
+    this.amount = amount;
+    this.status = status;
+    this.description = description;
+    this.type = type;
+    this.createdAt = LocalDateTime.now();
+}
     @PrePersist
     public void beforeInsert() {
 
@@ -94,5 +100,9 @@ public class BankTransaction {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public TransactionType getType() {
+    return type;
     }
 }

@@ -165,6 +165,7 @@ h2 {
 
 .panel {
     padding: 22px;
+    min-width: 0;
 }
 
 .panel-heading {
@@ -222,6 +223,7 @@ select {
     font-size: 13px;
 
     outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input:focus,
@@ -229,6 +231,10 @@ select:focus {
     border-color: #6698ee;
 
     box-shadow: 0 0 0 3px #6698ee1c;
+}
+
+input::placeholder {
+    color: #a0aabd;
 }
 
 
@@ -247,6 +253,7 @@ select:focus {
 .checkbox-row input {
     width: 16px;
     height: 16px;
+    cursor: pointer;
 }
 
 
@@ -298,8 +305,17 @@ select:focus {
     color: #ffffff;
 }
 
+.button.small:hover {
+    background: #194da9;
+}
+
 .button:active {
     transform: scale(0.98);
+}
+
+.button:focus-visible {
+    outline: 3px solid #6698ee66;
+    outline-offset: 2px;
 }
 
 
@@ -312,6 +328,7 @@ select:focus {
     color: #8490a3;
 
     margin: 13px 0 0;
+    line-height: 1.6;
 }
 
 
@@ -556,6 +573,12 @@ footer {
 
     .topbar {
         padding: 0 16px;
+    }
+
+    .page-heading {
+        align-items: flex-start;
+        gap: 12px;
+        flex-direction: column;
     }
 
     h1 {

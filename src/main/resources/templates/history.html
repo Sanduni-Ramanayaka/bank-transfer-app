@@ -3,16 +3,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Account History | BankFlow</title>
 
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
 </head>
 
 <body>
@@ -39,16 +35,11 @@
 
             <div>
 
-                <p class="eyebrow">
-                    ACCOUNT STATEMENT
-                </p>
+                <p class="eyebrow">ACCOUNT STATEMENT</p>
 
-                <h1>
-                    Transaction History
-                </h1>
+                <h1>Transaction History</h1>
 
                 <p class="muted"
-                   th:if="${customer}"
                    th:text="${customer.name + ' · Account ' + customer.accountNumber}">
                 </p>
 
@@ -57,15 +48,55 @@
         </section>
 
 
-        <!-- Error Message -->
-        <div class="alert error"
-             th:if="${errorMessage}"
-             th:text="${errorMessage}">
-        </div>
+        <!-- Account Summary -->
+        <section class="stats">
+
+            <article class="stat-card">
+
+                <span>Account Balance</span>
+
+                <strong th:text="${'Rs. ' + #numbers.formatDecimal(customer.balance, 1, 2)}">
+                    Rs. 0.00
+                </strong>
+
+            </article>
 
 
-        <!-- Transaction History Table -->
-        <section class="panel">
+            <article class="stat-card">
+
+                <span>Total Amount Sent</span>
+
+                <strong th:text="${'Rs. ' + #numbers.formatDecimal(totalSent, 1, 2)}">
+                    Rs. 0.00
+                </strong>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <span>Total Transactions</span>
+
+                <strong th:text="${#lists.size(history)}">
+                    0
+                </strong>
+
+            </article>
+
+        </section>
+
+
+        <!-- Transaction History -->
+        <section class="panel section-gap">
+
+            <div class="panel-heading">
+
+                <p class="eyebrow">ACCOUNT ACTIVITY</p>
+
+                <h2>Transaction Records</h2>
+
+            </div>
+
 
             <div class="table-wrap">
 
@@ -74,21 +105,14 @@
                     <thead>
 
                         <tr>
-
                             <th>ID</th>
-
+                            <th>Type</th>
                             <th>Sender</th>
-
                             <th>Receiver</th>
-
                             <th class="right">Amount</th>
-
                             <th>Status</th>
-
                             <th>Description</th>
-
                             <th>Date</th>
-
                         </tr>
 
                     </thead>
@@ -102,34 +126,30 @@
                                 th:text="${tx.id}">
                             </td>
 
+                            <td th:text="${tx.type != null ? tx.type : 'TRANSFER'}">
+                            </td>
 
                             <td th:text="${tx.senderAccount ?: '—'}">
                             </td>
 
-
                             <td th:text="${tx.receiverAccount ?: '—'}">
                             </td>
-
 
                             <td class="right money"
                                 th:text="${'Rs. ' + #numbers.formatDecimal(tx.amount, 1, 2)}">
                             </td>
-
 
                             <td>
 
                                 <span class="status"
                                       th:classappend="${tx.status.name() == 'SUCCESS'} ? ' status-success' : ' status-failed'"
                                       th:text="${tx.status}">
-
                                 </span>
 
                             </td>
 
-
                             <td th:text="${tx.description}">
                             </td>
-
 
                             <td th:text="${#temporals.format(tx.createdAt, 'yyyy-MM-dd HH:mm:ss')}">
                             </td>
@@ -140,10 +160,8 @@
                         <!-- Empty History Message -->
                         <tr th:if="${#lists.isEmpty(history)}">
 
-                            <td colspan="7" class="empty">
-
+                            <td colspan="8" class="empty">
                                 No transactions found for this account.
-
                             </td>
 
                         </tr>
@@ -159,14 +177,18 @@
             <div class="panel-footer">
 
                 <a class="button secondary" th:href="@{/}">
-
                     Back to Dashboard
-
                 </a>
 
             </div>
 
         </section>
+
+
+        <!-- Footer -->
+        <footer>
+            BankFlow · Academic Transaction Processing Demonstration
+        </footer>
 
     </main>
 
