@@ -27,7 +27,6 @@
 
     </header>
 
-
     <main class="container">
 
         <!-- Page Heading -->
@@ -47,10 +46,10 @@
 
         </section>
 
-
         <!-- Account Summary -->
         <section class="stats">
 
+            <!-- Current Balance -->
             <article class="stat-card">
 
                 <span>Account Balance</span>
@@ -61,18 +60,18 @@
 
             </article>
 
-
+            <!-- Total Amount Sent -->
             <article class="stat-card">
 
                 <span>Total Amount Sent</span>
 
-                <strong th:text="${'Rs. ' + #numbers.formatDecimal(totalSent, 1, 2)}">
+                <strong th:text="${'Rs. ' + #numbers.formatDecimal(totalSent != null ? totalSent : 0, 1, 2)}">
                     Rs. 0.00
                 </strong>
 
             </article>
 
-
+            <!-- Total Transactions -->
             <article class="stat-card">
 
                 <span>Total Transactions</span>
@@ -85,7 +84,6 @@
 
         </section>
 
-
         <!-- Transaction History -->
         <section class="panel section-gap">
 
@@ -96,7 +94,6 @@
                 <h2>Transaction Records</h2>
 
             </div>
-
 
             <div class="table-wrap">
 
@@ -109,7 +106,7 @@
                             <th>Type</th>
                             <th>Sender</th>
                             <th>Receiver</th>
-                            <th class="right">Amount</th>
+                            <th class="right">Amount (LKR)</th>
                             <th>Status</th>
                             <th>Description</th>
                             <th>Date</th>
@@ -117,45 +114,52 @@
 
                     </thead>
 
-
                     <tbody>
 
+                        <!-- Display Transaction Records -->
                         <tr th:each="tx : ${history}">
 
+                            <!-- Transaction ID -->
                             <td class="mono"
                                 th:text="${tx.id}">
                             </td>
 
+                            <!-- Transaction Type -->
                             <td th:text="${tx.type != null ? tx.type : 'TRANSFER'}">
                             </td>
 
-                            <td th:text="${tx.senderAccount ?: '—'}">
+                            <!-- Sender Account -->
+                            <td th:text="${tx.senderAccount != null ? tx.senderAccount : '—'}">
                             </td>
 
-                            <td th:text="${tx.receiverAccount ?: '—'}">
+                            <!-- Receiver Account -->
+                            <td th:text="${tx.receiverAccount != null ? tx.receiverAccount : '—'}">
                             </td>
 
+                            <!-- Transaction Amount -->
                             <td class="right money"
                                 th:text="${'Rs. ' + #numbers.formatDecimal(tx.amount, 1, 2)}">
                             </td>
 
+                            <!-- Transaction Status -->
                             <td>
 
                                 <span class="status"
-                                      th:classappend="${tx.status.name() == 'SUCCESS'} ? ' status-success' : ' status-failed'"
-                                      th:text="${tx.status}">
+                                      th:classappend="${tx.status != null and tx.status.name() == 'SUCCESS'} ? ' status-success' : ' status-failed'"
+                                      th:text="${tx.status != null ? tx.status : 'UNKNOWN'}">
                                 </span>
 
                             </td>
 
-                            <td th:text="${tx.description}">
+                            <!-- Transaction Description -->
+                            <td th:text="${tx.description != null ? tx.description : '—'}">
                             </td>
 
-                            <td th:text="${#temporals.format(tx.createdAt, 'yyyy-MM-dd HH:mm:ss')}">
+                            <!-- Transaction Date -->
+                            <td th:text="${tx.createdAt != null ? #temporals.format(tx.createdAt, 'yyyy-MM-dd HH:mm:ss') : '—'}">
                             </td>
 
                         </tr>
-
 
                         <!-- Empty History Message -->
                         <tr th:if="${#lists.isEmpty(history)}">
@@ -172,7 +176,6 @@
 
             </div>
 
-
             <!-- Back Button -->
             <div class="panel-footer">
 
@@ -183,7 +186,6 @@
             </div>
 
         </section>
-
 
         <!-- Footer -->
         <footer>

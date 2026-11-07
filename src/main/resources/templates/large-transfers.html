@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Large Transfers | BankFlow</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="topbar">
+    <div>
+        <span class="brand-mark">B</span>
+        <span class="brand">BankFlow</span>
+    </div>
+    <a class="top-link" th:href="@{/}">Dashboard</a>
+</header>
+
+<main class="container">
+
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">TRANSACTION MONITORING</p>
+            <h1>Large Transfers</h1>
+            <p class="muted">View successful transfers above a selected amount.</p>
+        </div>
+    </section>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <h2>Filter Transfers</h2>
+        </div>
+
+        <form th:action="@{/large-transfers}"
+              method="get"
+              class="form-grid">
+
+            <label>
+                Minimum Amount (LKR)
+                <input type="number"
+                       name="min"
+                       min="0"
+                       step="0.01"
+                       th:value="${min}"
+                       required>
+            </label>
+
+            <button type="submit" class="button primary">
+                Search
+            </button>
+
+        </form>
+
+        <p class="muted">
+            Only successful transfers greater than the selected amount are displayed.
+        </p>
+    </section>
+
+    <section class="panel section-gap">
+        <div class="panel-heading">
+            <h2>Transfer Results</h2>
+            <p class="muted"
+               th:text="${#lists.size(transfers)} + ' matching transfers'">
+            </p>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sender</th>
+                        <th>Receiver</th>
+                        <th>Amount (LKR)</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr th:if="${#lists.isEmpty(transfers)}">
+                        <td colspan="6" class="empty">
+                            No large transfers found.
+                        </td>
+                    </tr>
+
+                    <tr th:each="tx : ${transfers}">
+                        <td th:text="${tx.id}"></td>
+                        <td th:text="${tx.senderAccount}"></td>
+                        <td th:text="${tx.receiverAccount}"></td>
+
+                        <td th:text="${'Rs. ' + #numbers.formatDecimal(tx.amount, 1, 2)}">
+                        </td>
+
+                        <td th:text="${tx.status}"></td>
+
+                        <td th:text="${#temporals.format(tx.createdAt, 'yyyy-MM-dd HH:mm:ss')}">
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel-footer">
+            <a class="button secondary" th:href="@{/}">
+                Back to Dashboard
+            </a>
+        </div>
+    </section>
+
+</main>
+
+</body>
+</html>

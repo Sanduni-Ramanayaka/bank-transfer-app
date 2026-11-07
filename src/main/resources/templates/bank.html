@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Bank Transfer Dashboard</title>
+    <title>Bank Transfer Dashboard | BankFlow</title>
 
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
@@ -26,7 +26,6 @@
         </span>
 
     </header>
-
 
     <main class="container">
 
@@ -52,20 +51,17 @@
 
         </section>
 
-
         <!-- Success Message -->
         <div class="alert success"
              th:if="${successMessage}"
              th:text="${successMessage}">
         </div>
 
-
         <!-- Error Message -->
         <div class="alert error"
              th:if="${errorMessage}"
              th:text="${errorMessage}">
         </div>
-
 
         <!-- Dashboard Statistics -->
         <section class="stats">
@@ -80,7 +76,6 @@
 
             </article>
 
-
             <article class="stat-card">
 
                 <span>Successful transfers</span>
@@ -90,7 +85,6 @@
                 </strong>
 
             </article>
-
 
             <article class="stat-card">
 
@@ -104,29 +98,23 @@
 
         </section>
 
-
         <!-- Transfer and Add Customer Section -->
         <section class="two-column">
-
 
             <!-- Money Transfer Form -->
             <article class="panel">
 
                 <div class="panel-heading">
-
                     <div>
                         <p class="eyebrow">MONEY MOVEMENT</p>
                         <h2>Transfer Money</h2>
                     </div>
-
                 </div>
-
 
                 <form th:action="@{/transfer}"
                       th:object="${transferRequest}"
                       method="post"
                       class="form-grid">
-
 
                     <!-- Sender Account -->
                     <label>
@@ -135,9 +123,7 @@
 
                         <select th:field="*{senderAccount}" required>
 
-                            <option value="">
-                                Select sender
-                            </option>
+                            <option value="">Select sender</option>
 
                             <option th:each="customer : ${customers}"
                                     th:if="${customer.accountNumber != '999999'}"
@@ -148,7 +134,6 @@
                         </select>
 
                     </label>
-
 
                     <!-- Receiver Account -->
                     <label>
@@ -157,9 +142,7 @@
 
                         <select th:field="*{receiverAccount}" required>
 
-                            <option value="">
-                                Select receiver
-                            </option>
+                            <option value="">Select receiver</option>
 
                             <option th:each="customer : ${customers}"
                                     th:if="${customer.accountNumber != '999999'}"
@@ -170,7 +153,6 @@
                         </select>
 
                     </label>
-
 
                     <!-- Amount -->
                     <label class="full">
@@ -186,7 +168,6 @@
 
                     </label>
 
-
                     <!-- Simulate Failure -->
                     <label class="checkbox-row full">
 
@@ -198,17 +179,13 @@
 
                     </label>
 
-
                     <!-- Transfer Button -->
                     <button class="button primary full"
                             type="submit">
-
                         Process Transfer
-
                     </button>
 
                 </form>
-
 
                 <p class="hint">
                     A 1% transfer fee will be deducted from the sender.
@@ -218,25 +195,19 @@
 
             </article>
 
-
-
             <!-- Add Customer Form -->
             <article class="panel">
 
                 <div class="panel-heading">
-
                     <div>
                         <p class="eyebrow">CUSTOMER MANAGEMENT</p>
                         <h2>Add Customer</h2>
                     </div>
-
                 </div>
-
 
                 <form th:action="@{/customers}"
                       method="post"
                       class="form-grid">
-
 
                     <label>
 
@@ -250,7 +221,6 @@
 
                     </label>
 
-
                     <label>
 
                         Customer Name
@@ -263,7 +233,6 @@
 
                     </label>
 
-
                     <label class="full">
 
                         Email Address
@@ -275,7 +244,6 @@
                                placeholder="name@example.com">
 
                     </label>
-
 
                     <label class="full">
 
@@ -290,12 +258,9 @@
 
                     </label>
 
-
                     <button class="button secondary full"
                             type="submit">
-
                         Add Customer
-
                     </button>
 
                 </form>
@@ -304,28 +269,22 @@
 
         </section>
 
-
         <!-- Deposit and Withdraw Section -->
         <section class="two-column section-gap">
-
 
             <!-- Deposit Money Form -->
             <article class="panel">
 
                 <div class="panel-heading">
-
                     <div>
                         <p class="eyebrow">MONEY MOVEMENT</p>
                         <h2>Deposit Money</h2>
                     </div>
-
                 </div>
-
 
                 <form th:action="@{/deposit}"
                       method="post"
                       class="form-grid">
-
 
                     <label class="full">
 
@@ -333,9 +292,7 @@
 
                         <select name="accountNumber" required>
 
-                            <option value="">
-                                Select account
-                            </option>
+                            <option value="">Select account</option>
 
                             <option th:each="customer : ${customers}"
                                     th:if="${customer.accountNumber != '999999'}"
@@ -346,7 +303,6 @@
                         </select>
 
                     </label>
-
 
                     <label class="full">
 
@@ -361,37 +317,28 @@
 
                     </label>
 
-
                     <button class="button primary full"
                             type="submit">
-
                         Deposit Money
-
                     </button>
 
                 </form>
 
             </article>
 
-
-
             <!-- Withdraw Money Form -->
             <article class="panel">
 
                 <div class="panel-heading">
-
                     <div>
                         <p class="eyebrow">MONEY MOVEMENT</p>
                         <h2>Withdraw Money</h2>
                     </div>
-
                 </div>
-
 
                 <form th:action="@{/withdraw}"
                       method="post"
                       class="form-grid">
-
 
                     <label class="full">
 
@@ -399,9 +346,7 @@
 
                         <select name="accountNumber" required>
 
-                            <option value="">
-                                Select account
-                            </option>
+                            <option value="">Select account</option>
 
                             <option th:each="customer : ${customers}"
                                     th:if="${customer.accountNumber != '999999'}"
@@ -412,7 +357,6 @@
                         </select>
 
                     </label>
-
 
                     <label class="full">
 
@@ -427,12 +371,9 @@
 
                     </label>
 
-
                     <button class="button primary full"
                             type="submit">
-
                         Withdraw Money
-
                     </button>
 
                 </form>
@@ -441,22 +382,15 @@
 
         </section>
 
-
-
         <!-- Customer Accounts Table -->
         <section class="panel section-gap">
-
 
             <div class="panel-heading split">
 
                 <div>
-
                     <p class="eyebrow">CUSTOMER RECORDS</p>
-
                     <h2>Accounts</h2>
-
                 </div>
-
 
                 <!-- Search Form -->
                 <form th:action="@{/}"
@@ -466,7 +400,7 @@
                     <input type="search"
                            name="keyword"
                            th:value="${keyword}"
-                           placeholder="Search name or account">
+                           placeholder="Search customer name">
 
                     <button class="button small" type="submit">
                         Search
@@ -480,30 +414,19 @@
 
             </div>
 
-
-
             <div class="table-wrap">
 
                 <table>
 
                     <thead>
-
                         <tr>
-
                             <th>Account</th>
-
                             <th>Customer</th>
-
                             <th>Email</th>
-
                             <th class="right">Balance</th>
-
                             <th></th>
-
                         </tr>
-
                     </thead>
-
 
                     <tbody>
 
@@ -513,42 +436,31 @@
                                 th:text="${customer.accountNumber}">
                             </td>
 
-
                             <td class="name-cell"
                                 th:text="${customer.name}">
                             </td>
 
-
                             <td th:text="${customer.email}">
                             </td>
-
 
                             <td class="right money"
                                 th:text="${'Rs. ' + #numbers.formatDecimal(customer.balance, 1, 2)}">
                             </td>
 
-
                             <td>
-
                                 <a class="table-link"
                                    th:href="@{/accounts/{accountNumber}/history(accountNumber=${customer.accountNumber})}">
-
                                     History
-
                                 </a>
-
                             </td>
 
                         </tr>
-
 
                         <!-- Empty Customer Message -->
                         <tr th:if="${#lists.isEmpty(customers)}">
 
                             <td colspan="5" class="empty">
-
                                 No customers found.
-
                             </td>
 
                         </tr>
@@ -561,52 +473,34 @@
 
         </section>
 
-
-
         <!-- Latest Transactions -->
         <section class="panel section-gap">
-
 
             <div class="panel-heading">
 
                 <div>
-
                     <p class="eyebrow">ACTIVITY</p>
-
                     <h2>Latest Transactions</h2>
-
                 </div>
 
             </div>
-
-
 
             <div class="table-wrap">
 
                 <table>
 
                     <thead>
-
                         <tr>
-
                             <th>ID</th>
-
+                            <th>Type</th>
                             <th>From</th>
-
                             <th>To</th>
-
                             <th class="right">Amount</th>
-
                             <th>Status</th>
-
                             <th>Description</th>
-
                             <th>Date</th>
-
                         </tr>
-
                     </thead>
-
 
                     <tbody>
 
@@ -616,47 +510,41 @@
                                 th:text="${tx.id}">
                             </td>
 
-
-                            <td th:text="${tx.senderAccount ?: '—'}">
+                            <td th:text="${tx.type != null ? tx.type : 'TRANSFER'}">
                             </td>
 
-
-                            <td th:text="${tx.receiverAccount ?: '—'}">
+                            <td th:text="${tx.senderAccount != null ? tx.senderAccount : '—'}">
                             </td>
 
+                            <td th:text="${tx.receiverAccount != null ? tx.receiverAccount : '—'}">
+                            </td>
 
                             <td class="right money"
                                 th:text="${'Rs. ' + #numbers.formatDecimal(tx.amount, 1, 2)}">
                             </td>
 
-
                             <td>
 
                                 <span class="status"
-                                      th:classappend="${tx.status.name() == 'SUCCESS'} ? ' status-success' : ' status-failed'"
-                                      th:text="${tx.status}">
+                                      th:classappend="${tx.status != null and tx.status.name() == 'SUCCESS'} ? ' status-success' : ' status-failed'"
+                                      th:text="${tx.status != null ? tx.status : 'UNKNOWN'}">
                                 </span>
 
                             </td>
 
-
-                            <td th:text="${tx.description}">
+                            <td th:text="${tx.description != null ? tx.description : '—'}">
                             </td>
 
-
-                            <td th:text="${#temporals.format(tx.createdAt, 'yyyy-MM-dd HH:mm:ss')}">
+                            <td th:text="${tx.createdAt != null ? #temporals.format(tx.createdAt, 'yyyy-MM-dd HH:mm:ss') : '—'}">
                             </td>
 
                         </tr>
 
-
                         <!-- Empty Transaction Message -->
                         <tr th:if="${#lists.isEmpty(transactions)}">
 
-                            <td colspan="7" class="empty">
-
+                            <td colspan="8" class="empty">
                                 No transactions recorded yet.
-
                             </td>
 
                         </tr>
@@ -669,12 +557,9 @@
 
         </section>
 
-
         <!-- Footer -->
         <footer>
-
             BankFlow · Academic Transaction Processing Demonstration
-
         </footer>
 
     </main>

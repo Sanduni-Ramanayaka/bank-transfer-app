@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdraw Money | BankFlow</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header class="topbar">
+    <div>
+        <span class="brand-mark">B</span>
+        <span class="brand">BankFlow</span>
+    </div>
+    <a class="top-link" th:href="@{/}">Dashboard</a>
+</header>
+
+<main class="container">
+
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">BANK OPERATIONS</p>
+            <h1>Withdraw Money</h1>
+            <p class="muted">Withdraw money from a customer account.</p>
+        </div>
+    </section>
+
+    <div class="alert success"
+         th:if="${successMessage}"
+         th:text="${successMessage}"></div>
+
+    <div class="alert error"
+         th:if="${errorMessage}"
+         th:text="${errorMessage}"></div>
+
+    <section class="panel">
+        <div class="panel-heading">
+            <h2>Withdraw Funds</h2>
+        </div>
+
+        <form th:action="@{/withdraw}" method="post" class="form-grid">
+
+            <label>
+                Customer Account
+                <select name="accountNumber" required>
+                    <option value="">Select account</option>
+                    <option th:each="customer : ${customers}"
+                            th:if="${customer.accountNumber != '999999'}"
+                            th:value="${customer.accountNumber}"
+                            th:text="${customer.name + ' (' + customer.accountNumber + ')'}">
+                    </option>
+                </select>
+            </label>
+
+            <label>
+                Amount (LKR)
+                <input type="number"
+                       name="amount"
+                       min="0.01"
+                       step="0.01"
+                       placeholder="2000.00"
+                       required>
+            </label>
+
+            <button type="submit" class="button primary">
+                Withdraw Money
+            </button>
+
+        </form>
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -216,4 +216,16 @@ public class BankController {
 
         return "redirect:/";
     }
+
+    @GetMapping("/deposit")
+public String showDepositPage(Model model) {
+    model.addAttribute("customers", bankService.searchCustomers(null));
+    return "deposit";
+}
+
+@GetMapping("/withdraw")
+public String showWithdrawPage(Model model) {
+    model.addAttribute("customers", bankService.searchCustomers(null));
+    return "withdraw";
+}
 }
