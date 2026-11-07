@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Account History | BankFlow</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="topbar">
+
+        <div>
+            <span class="brand-mark">B</span>
+            <span class="brand">BankFlow</span>
+        </div>
+
+        <a class="top-link" th:href="@{/}">
+            ← Dashboard
+        </a>
+
+    </header>
+
+
+    <main class="container">
+
+        <!-- Page Heading -->
+        <section class="page-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    ACCOUNT STATEMENT
+                </p>
+
+                <h1>
+                    Transaction History
+                </h1>
+
+                <p class="muted"
+                   th:if="${customer}"
+                   th:text="${customer.name + ' · Account ' + customer.accountNumber}">
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Error Message -->
+        <div class="alert error"
+             th:if="${errorMessage}"
+             th:text="${errorMessage}">
+        </div>
+
+
+        <!-- Transaction History Table -->
+        <section class="panel">
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Sender</th>
+
+                            <th>Receiver</th>
+
+                            <th class="right">Amount</th>
+
+                            <th>Status</th>
+
+                            <th>Description</th>
+
+                            <th>Date</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr th:each="tx : ${history}">
+
+                            <td class="mono"
+                                th:text="${tx.id}">
+                            </td>
+
+
+                            <td th:text="${tx.senderAccount ?: '—'}">
+                            </td>
+
+
+                            <td th:text="${tx.receiverAccount ?: '—'}">
+                            </td>
+
+
+                            <td class="right money"
+                                th:text="${'Rs. ' + #numbers.formatDecimal(tx.amount, 1, 2)}">
+                            </td>
+
+
+                            <td>
+
+                                <span class="status"
+                                      th:classappend="${tx.status.name() == 'SUCCESS'} ? ' status-success' : ' status-failed'"
+                                      th:text="${tx.status}">
+
+                                </span>
+
+                            </td>
+
+
+                            <td th:text="${tx.description}">
+                            </td>
+
+
+                            <td th:text="${#temporals.format(tx.createdAt, 'yyyy-MM-dd HH:mm:ss')}">
+                            </td>
+
+                        </tr>
+
+
+                        <!-- Empty History Message -->
+                        <tr th:if="${#lists.isEmpty(history)}">
+
+                            <td colspan="7" class="empty">
+
+                                No transactions found for this account.
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- Back Button -->
+            <div class="panel-footer">
+
+                <a class="button secondary" th:href="@{/}">
+
+                    Back to Dashboard
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bank Transfer Dashboard</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<!-- Navigation Bar -->
+<header class="topbar">
+
+    <div>
+        <span class="brand-mark">B</span>
+        <span class="brand">BankFlow</span>
+    </div>
+
+    <span class="top-note">
+        Transaction Processing System
+    </span>
+
+</header>
+
+
+<main class="container">
+
+    <!-- Page Heading -->
+    <section class="page-heading">
+
+        <div>
+            <p class="eyebrow">BANK OPERATIONS</p>
+
+            <h1>Dashboard</h1>
+
+            <p class="muted">
+                Manage customers, balances and money transfers.
+            </p>
+        </div>
+
+    </section>
+
+
+    <!-- Success Message -->
+    <div class="alert success"
+         th:if="${successMessage}"
+         th:text="${successMessage}">
+    </div>
+
+
+    <!-- Error Message -->
+    <div class="alert error"
+         th:if="${errorMessage}"
+         th:text="${errorMessage}">
+    </div>
+
+
+    <!-- Dashboard Statistics -->
+    <section class="stats">
+
+        <article class="stat-card">
+
+            <span>Total customer balances</span>
+
+            <strong th:text="${'Rs. ' + #numbers.formatDecimal(totalBalance, 1, 2)}">
+                Rs. 85,000.00
+            </strong>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <span>Successful transfers</span>
+
+            <strong th:text="${successfulCount}">
+                0
+            </strong>
+
+        </article>
+
+
+        <article class="stat-card">
+
+            <span>Failed transfers</span>
+
+            <strong th:text="${failedCount}">
+                0
+            </strong>
+
+        </article>
+
+    </section>
+
+
+    <!-- Transfer and Add Customer Section -->
+    <section class="two-column">
+
+
+        <!-- Money Transfer Form -->
+        <article class="panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <p class="eyebrow">MONEY MOVEMENT</p>
+                    <h2>Transfer Money</h2>
+                </div>
+
+            </div>
+
+
+            <form th:action="@{/transfer}"
+                  th:object="${transferRequest}"
+                  method="post"
+                  class="form-grid">
+
+
+                <!-- Sender Account -->
+                <label>
+
+                    From Account
+
+                    <select th:field="*{senderAccount}" required>
+
+                        <option value="">
+                            Select sender
+                        </option>
+
+                        <option th:each="customer : ${customers}"
+                                th:value="${customer.accountNumber}"
+                                th:text="${customer.name + ' — ' + customer.accountNumber}">
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <!-- Receiver Account -->
+                <label>
+
+                    To Account
+
+                    <select th:field="*{receiverAccount}" required>
+
+                        <option value="">
+                            Select receiver
+                        </option>
+
+                        <option th:each="customer : ${customers}"
+                                th:value="${customer.accountNumber}"
+                                th:text="${customer.name + ' — ' + customer.accountNumber}">
+                        </option>
+
+                    </select>
+
+                </label>
+
+
+                <!-- Amount -->
+                <label class="full">
+
+                    Amount (Rs.)
+
+                    <input type="number"
+                           th:field="*{amount}"
+                           min="0.01"
+                           step="0.01"
+                           placeholder="e.g. 5000.00"
+                           required>
+
+                </label>
+
+
+                <!-- Simulate Failure -->
+                <label class="checkbox-row full">
+
+                    <input type="checkbox"
+                           th:field="*{simulateFailure}">
+
+                    Simulate system failure after debit
+                    (for rollback testing)
+
+                </label>
+
+
+                <!-- Transfer Button -->
+                <button class="button primary full"
+                        type="submit">
+
+                    Process Transfer
+
+                </button>
+
+            </form>
+
+
+            <p class="hint">
+                Test the rollback feature only with the simulation
+                checkbox enabled.
+            </p>
+
+        </article>
+
+
+
+        <!-- Add Customer Form -->
+        <article class="panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <p class="eyebrow">CUSTOMER MANAGEMENT</p>
+                    <h2>Add Customer</h2>
+                </div>
+
+            </div>
+
+
+            <form th:action="@{/customers}"
+                  method="post"
+                  class="form-grid">
+
+
+                <label>
+
+                    Account Number
+
+                    <input type="text"
+                           name="accountNumber"
+                           required
+                           maxlength="20"
+                           placeholder="e.g. 100004">
+
+                </label>
+
+
+                <label>
+
+                    Customer Name
+
+                    <input type="text"
+                           name="name"
+                           required
+                           maxlength="100"
+                           placeholder="Full name">
+
+                </label>
+
+
+                <label class="full">
+
+                    Email Address
+
+                    <input type="email"
+                           name="email"
+                           required
+                           maxlength="150"
+                           placeholder="name@example.com">
+
+                </label>
+
+
+                <label class="full">
+
+                    Opening Balance (Rs.)
+
+                    <input type="number"
+                           name="openingBalance"
+                           min="0"
+                           step="0.01"
+                           required
+                           placeholder="15000.00">
+
+                </label>
+
+
+                <button class="button secondary full"
+                        type="submit">
+
+                    Add Customer
+
+                </button>
+
+            </form>
+
+        </article>
+
+    </section>
+
+
+
+    <!-- Customer Accounts Table -->
+    <section class="panel section-gap">
+
+
+        <div class="panel-heading split">
+
+            <div>
+
+                <p class="eyebrow">CUSTOMER RECORDS</p>
+
+                <h2>Accounts</h2>
+
+            </div>
+
+
+            <!-- Search Form -->
+            <form th:action="@{/}"
+                  method="get"
+                  class="search-form">
+
+                <input type="search"
+                       name="keyword"
+                       th:value="${keyword}"
+                       placeholder="Search name or account">
+
+                <button class="button small" type="submit">
+                    Search
+                </button>
+
+                <a th:href="@{/}" class="clear-link">
+                    Clear
+                </a>
+
+            </form>
+
+        </div>
+
+
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Account</th>
+
+                        <th>Customer</th>
+
+                        <th>Email</th>
+
+                        <th class="right">Balance</th>
+
+                        <th></th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr th:each="customer : ${customers}">
+
+                        <td class="mono"
+                            th:text="${customer.accountNumber}">
+                        </td>
+
+
+                        <td class="name-cell"
+                            th:text="${customer.name}">
+                        </td>
+
+
+                        <td th:text="${customer.email}">
+                        </td>
+
+
+                        <td class="right money"
+                            th:text="${'Rs. ' + #numbers.formatDecimal(customer.balance, 1, 2)}">
+                        </td>
+
+
+                        <td>
+
+                            <a class="table-link"
+                               th:href="@{/accounts/{accountNumber}/history(accountNumber=${customer.accountNumber})}">
+
+                                History
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr th:if="${#lists.isEmpty(customers)}">
+
+                        <td colspan="5" class="empty">
+
+                            No customers found.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- Latest Transactions -->
+    <section class="panel section-gap">
+
+
+        <div class="panel-heading">
+
+            <div>
+
+                <p class="eyebrow">ACTIVITY</p>
+
+                <h2>Latest Transactions</h2>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>From</th>
+
+                        <th>To</th>
+
+                        <th class="right">Amount</th>
+
+                        <th>Status</th>
+
+                        <th>Description</th>
+
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    <tr th:each="tx : ${transactions}">
+
+                        <td class="mono"
+                            th:text="${tx.id}">
+                        </td>
+
+
+                        <td th:text="${tx.senderAccount ?: '—'}">
+                        </td>
+
+
+                        <td th:text="${tx.receiverAccount ?: '—'}">
+                        </td>
+
+
+                        <td class="right money"
+                            th:text="${'Rs. ' + #numbers.formatDecimal(tx.amount, 1, 2)}">
+                        </td>
+
+
+                        <td>
+
+                            <span class="status"
+                                  th:classappend="${tx.status.name() == 'SUCCESS'} ? ' status-success' : ' status-failed'"
+                                  th:text="${tx.status}">
+
+                            </span>
+
+                        </td>
+
+
+                        <td th:text="${tx.description}">
+                        </td>
+
+
+                        <td th:text="${#temporals.format(tx.createdAt, 'yyyy-MM-dd HH:mm:ss')}">
+                        </td>
+
+                    </tr>
+
+
+                    <tr th:if="${#lists.isEmpty(transactions)}">
+
+                        <td colspan="7" class="empty">
+
+                            No transactions recorded yet.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+
+        BankFlow · Academic Transaction Processing Demonstration
+
+    </footer>
+
+</main>
+
+</body>
+</html>

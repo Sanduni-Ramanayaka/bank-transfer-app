@@ -1,0 +1,565 @@
+
+/* =========================================
+   BANKFLOW - BANKING DASHBOARD STYLES
+========================================= */
+
+/* Global Settings */
+
+:root {
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    color: #172033;
+    background: #f4f6fa;
+    font-synthesis: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+
+/* =========================================
+   NAVIGATION BAR
+========================================= */
+
+.topbar {
+    height: 68px;
+    background: #101b33;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 max(calc((100% - 1180px) / 2), 24px);
+}
+
+.brand {
+    font-weight: 750;
+    font-size: 19px;
+    letter-spacing: 0.2px;
+}
+
+.brand-mark {
+    display: inline-grid;
+    place-items: center;
+
+    width: 30px;
+    height: 30px;
+
+    border-radius: 9px;
+
+    background: #77a8ff;
+    color: #102044;
+
+    font-weight: 900;
+    margin-right: 10px;
+}
+
+.top-note,
+.top-link {
+    color: #c4cee0;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+
+/* =========================================
+   MAIN CONTAINER
+========================================= */
+
+.container {
+    max-width: 1180px;
+    margin: 38px auto;
+    padding: 0 22px;
+}
+
+.page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 24px;
+}
+
+h1 {
+    font-size: 32px;
+    margin: 4px 0 7px;
+    letter-spacing: -0.8px;
+}
+
+h2 {
+    font-size: 19px;
+    margin: 4px 0 0;
+}
+
+.eyebrow {
+    font-size: 10px;
+    letter-spacing: 1.6px;
+    color: #71809a;
+    font-weight: 800;
+    margin: 0;
+}
+
+.muted {
+    color: #78849a;
+    margin: 0;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   DASHBOARD STATISTICS
+========================================= */
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.stat-card,
+.panel {
+    background: #ffffff;
+
+    border: 1px solid #e7ebf2;
+    border-radius: 13px;
+
+    box-shadow: 0 4px 18px #1b2c4a08;
+}
+
+.stat-card {
+    padding: 19px 21px;
+}
+
+.stat-card span {
+    display: block;
+
+    color: #77839a;
+    font-size: 12px;
+
+    margin-bottom: 10px;
+}
+
+.stat-card strong {
+    font-size: 24px;
+    letter-spacing: -0.5px;
+}
+
+
+/* =========================================
+   CONTENT PANELS
+========================================= */
+
+.two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 18px;
+}
+
+.panel {
+    padding: 22px;
+}
+
+.panel-heading {
+    margin-bottom: 20px;
+}
+
+.panel-heading.split {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+
+/* =========================================
+   FORMS
+========================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 14px;
+}
+
+.form-grid label {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    color: #49556b;
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.form-grid .full {
+    grid-column: 1 / -1;
+}
+
+input,
+select {
+    width: 100%;
+    height: 41px;
+
+    border: 1px solid #dce2ec;
+    border-radius: 7px;
+
+    padding: 0 11px;
+
+    background: #ffffff;
+    color: #172033;
+
+    font: inherit;
+    font-size: 13px;
+
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #6698ee;
+
+    box-shadow: 0 0 0 3px #6698ee1c;
+}
+
+
+/* Checkbox */
+
+.checkbox-row {
+    display: flex !important;
+    flex-direction: row !important;
+
+    align-items: center;
+
+    gap: 9px !important;
+    font-weight: 500 !important;
+}
+
+.checkbox-row input {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.button {
+    border: 0;
+    border-radius: 7px;
+
+    padding: 11px 15px;
+
+    font-weight: 700;
+    font-size: 12px;
+
+    text-decoration: none;
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.primary {
+    background: #245fcb;
+    color: #ffffff;
+}
+
+.primary:hover {
+    background: #194da9;
+}
+
+.secondary {
+    background: #eaf0fb;
+    color: #244f98;
+}
+
+.secondary:hover {
+    background: #dce7fa;
+}
+
+.button.small {
+    padding: 9px 12px;
+
+    background: #245fcb;
+    color: #ffffff;
+}
+
+.button:active {
+    transform: scale(0.98);
+}
+
+
+/* =========================================
+   FORM HINT
+========================================= */
+
+.hint {
+    font-size: 11px;
+    color: #8490a3;
+
+    margin: 13px 0 0;
+}
+
+
+/* =========================================
+   SEARCH
+========================================= */
+
+.section-gap {
+    margin-top: 19px;
+}
+
+.search-form {
+    display: flex;
+    gap: 8px;
+
+    align-items: center;
+}
+
+.search-form input {
+    width: 220px;
+}
+
+.clear-link {
+    font-size: 12px;
+    color: #60718e;
+
+    text-decoration: none;
+}
+
+.clear-link:hover {
+    color: #245fcb;
+}
+
+
+/* =========================================
+   TABLES
+========================================= */
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+th {
+    text-align: left;
+
+    color: #77839a;
+    font-size: 10px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+
+    background: #f8f9fc;
+}
+
+th,
+td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #edf0f5;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+tbody tr:hover {
+    background: #fafbfe;
+}
+
+.right {
+    text-align: right;
+}
+
+.money {
+    font-variant-numeric: tabular-nums;
+    font-weight: 650;
+}
+
+.mono {
+    font-family: Consolas, monospace;
+    color: #596a86;
+}
+
+.name-cell {
+    font-weight: 650;
+}
+
+.table-link {
+    color: #245fcb;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.table-link:hover {
+    text-decoration: underline;
+}
+
+.empty {
+    text-align: center;
+    color: #8b96a8;
+    padding: 26px;
+}
+
+
+/* =========================================
+   TRANSACTION STATUS
+========================================= */
+
+.status {
+    display: inline-block;
+
+    padding: 5px 8px;
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.status-success {
+    background: #e7f7ee;
+    color: #16834b;
+}
+
+.status-failed {
+    background: #fff0ed;
+    color: #c34b38;
+}
+
+
+/* =========================================
+   SUCCESS AND ERROR MESSAGES
+========================================= */
+
+.alert {
+    padding: 12px 15px;
+    border-radius: 8px;
+
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.success {
+    background: #e8f7ee;
+    color: #187847;
+}
+
+.error {
+    background: #fff0ed;
+    color: #b33e30;
+}
+
+
+/* =========================================
+   HISTORY PAGE
+========================================= */
+
+.panel-footer {
+    padding-top: 18px;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+footer {
+    text-align: center;
+
+    color: #9aa4b4;
+    font-size: 11px;
+
+    padding: 28px 0 10px;
+}
+
+
+/* =========================================
+   TABLET RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 800px) {
+
+    .two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-heading.split {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .search-form {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .search-form input {
+        flex: 1;
+        width: auto;
+    }
+
+    .top-note {
+        display: none;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 520px) {
+
+    .container {
+        margin: 24px auto;
+        padding: 0 13px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid .full {
+        grid-column: auto;
+    }
+
+    .panel {
+        padding: 16px;
+    }
+
+    .topbar {
+        padding: 0 16px;
+    }
+
+    h1 {
+        font-size: 27px;
+    }
+
+}
